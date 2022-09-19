@@ -1,0 +1,12 @@
+<ul>
+    {% for student in students: %}
+       <p>{{ student.first_name }}</p>
+    {% endfor %}
+</ul>
+<ul>
+    {% for professor in professors: %}
+       <p>{{ professor.first_name }}</p>
+       <p>{{ professor.last_name }}</p>
+       <p>{{ professor.city }}</p>
+    {% endfor %}
+</ul>
