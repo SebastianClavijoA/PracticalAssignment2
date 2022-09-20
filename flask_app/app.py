@@ -15,58 +15,6 @@ app.config['MYSQL_PORT'] = 3306
 
 mysql = MySQL(app)
 
-@app.route('/students', methods=['GET'])
-def student_list_json():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM student')
-    data = cursor.fetchall()
-    resp = flask.Response(json.dumps(data))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
-
-@app.route('/students', methods=['POST'])
-def student_post_json():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
-    cursor.execute("INSERT INTO student (first_name, last_name, city, semester) VALUES ('%s', '%s', '%s', %i)" % 
-                   (data['first_name'], data['last_name'], data['city'], data['semester']))
-    
-    mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
-
-@app.route('/students', methods=['PUT'])
-def student_put_json():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
-    cursor.execute("UPDATE student SET first_name='%s', last_name='%s', city='%s', semester=%i WHERE id=%i" % 
-                   (data['first_name'], data['last_name'], data['city'], data['semester'], data['id']))
-    
-    mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
-
-@app.route('/students', methods=['DELETE'])
-def student_del_json():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
-    cursor.execute("DELETE FROM student WHERE id=%i" % 
-                   (data['id']))
-    
-    mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
-
-@app.route('/studentlist', methods=['GET'])
-def student_list():
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT * FROM student')
-    data = cursor.fetchall()
-    return render_template('list.html', students=data)
-
 @app.route('/professors', methods=['GET'])
 def professor_list_json():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -76,41 +24,66 @@ def professor_list_json():
     resp.headers['Content-Type'] = 'application/json'
     return resp
 
+@app.route('/createProfessor', methods=['GET'])
+def send_to_create_page():
+    return render_template('registerProfessors.html')
+
 @app.route('/professors', methods=['POST'])
 def professor_post_json():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    city = request.form['city']
+    address = request.form['address']
+    salary = request.form['salary']
     cursor.execute("INSERT INTO professor (first_name, last_name, city, address, salary) VALUES ('%s', '%s', '%s', '%s', %i)" % 
-                   (data['first_name'], data['last_name'], data['city'], data['semester']))
+                   (first_name, last_name, city, address, float(salary)))
     
     mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM professor')
+    data = cursor.fetchall()
+    return render_template('professorList.html', professors=data)
 
-@app.route('/professors', methods=['PUT'])
+@app.route('/editProfessor', methods=['POST'])
+def send_to_edit_page():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    id = request.form['id']
+    cursor.execute('SELECT * FROM professor WHERE id=%i'% 
+                   (int(id)))
+    data = cursor.fetchall()
+    return render_template('editProfessors.html', professor=data)
+
+@app.route('/modifyProfessor', methods=['POST'])
 def professor_put_json():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
+    id = request.form['id']
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    city = request.form['city']
+    address = request.form['address']
+    salary = request.form['salary']
     cursor.execute("UPDATE professor SET first_name='%s', last_name='%s', city='%s', address='%s', salary=%i WHERE id=%i" % 
-                   (data['first_name'], data['last_name'], data['city'], data['address'], data['salary'], data['id']))
+                   (first_name, last_name, city, address, float(salary), int(id)))
     
     mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM professor')
+    data = cursor.fetchall()
+    return render_template('professorList.html', professors=data)
 
-@app.route('/professors', methods=['DELETE'])
+@app.route('/deleteProfessor', methods=['POST'])
 def professor_del_json():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    data = request.json
+    id = request.form['id']
     cursor.execute("DELETE FROM professor WHERE id=%i" % 
-                   (data['id']))
+                   (int(id)))
     
     mysql.connection.commit()
-    resp = flask.Response(json.dumps({'result': 'ok'}))
-    resp.headers['Content-Type'] = 'application/json'
-    return resp
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM professor')
+    data = cursor.fetchall()
+    return render_template('professorList.html', professors=data)
 
 @app.route('/professorlist', methods=['GET'])
 def professor_list():

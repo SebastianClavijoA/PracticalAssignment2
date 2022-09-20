@@ -1,0 +1,69 @@
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <meta name="description" content="Bootstrap Admin App">
+   <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+   <link rel="icon" type="image/x-icon" href="favicon.ico">
+   <title>Lista de Profesores</title>
+   <!-- =============== BOOTSTRAP STYLES ===============-->
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+
+</head>
+<body>
+<header class="topnavbar-wrapper">
+         <!-- START Top Navbar-->
+         <nav class="navbar topnavbar" style="background-color: #0cb7f2">
+             <h4 style="color: white;text-align: center;margin: 0 auto;">Professor CRUD</h4>
+         </nav>
+</header>
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6">
+<div class="card" style="margin: 40px;">
+                  <div class="card-header">
+                     <div class="card-title">Lista de Profesores</div>
+                     <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                           <a href="/createProfessor" class="btn btn-success">Professor Register</a>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="card-body">
+                     <div class="table-responsive">                    
+                        <div id="datatable1_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer"><div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" class="custom-select custom-select-sm form-control form-control-sm"></div></div></div></div></div><div class="row"><div class="col-sm-12">
+                       <table class="table table-striped my-4 w-100 dataTable no-footer dtr-inline" id="datatable1" role="grid" aria-describedby="datatable1_info" style="width: 739px;">
+                           <thead>
+                              <tr role="row"><th data-priority="1" class="sorting_asc" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1" style="width: 78px;" aria-sort="ascending" aria-label="Engine: activate to sort column descending">First Name</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1" style="width: 152px;" aria-label="Browser: activate to sort column ascending">Last Name</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1" style="width: 141px;" aria-label="Platform(s): activate to sort column ascending">City</th>
+                                <th class="sorting" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1" style="width: 141px;" aria-label="Platform(s): activate to sort column ascending">Address</th>
+                                <th class="sort-numeric sorting" tabindex="0" aria-controls="datatable1" rowspan="1" colspan="1" style="width: 93px;" aria-label="Engine version: activate to sort column ascending">Salary</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           {% for professor in professors: %}
+                           <tr class="gradeA odd" role="row">
+                                 <td>{{ professor.first_name }}</td>
+                                 <td>{{ professor.last_name }}</td>
+                                 <td>{{ professor.city }}</td>
+                                 <td>{{ professor.address }}</td>
+                                 <td>{{ professor.salary }}</td>
+                                 <td><form  method="post" action="/editProfessor">
+                                    <input type="hidden" name="id" id="id" value="{{professor.id}}">
+                                    <input type="submit" value="Update Profesor" class="btn btn-lg btn-primary">
+                                 </form></td>
+                                 <td><form  method="post" action="/deleteProfessor">
+                                    <input type="hidden" name="id" id="id" value="{{professor.id}}">
+                                    <input type="submit" value="Delete Profesor" class="btn btn-lg btn-danger">
+                                 </form></td>
+                              </tr>
+                           {% endfor %}
+                           </tbody>
+                        </table>
+                  </div>
+               </div>
+  </div>
+  <div class="col-sm-3"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+<body>
